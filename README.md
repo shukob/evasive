@@ -24,3 +24,15 @@ DOSTargetedURL Regular expression of target URL, e.g. example.com:80/some.path  
 DOSUnTargetedURL Regular expression of untargeted URL, e.g. example.com:80/some.path  Multiple entries requires multiple lines.
 
 DOSLogOnly 0 or 1. Do not return 403 if 1. Defaults to 0.
+
+
+Remember
+--------
+
+You must include the Trex library when compiling the Apache2 module:
+
+apxs2 -i -a -c mod_evasive20.c trex.c
+
+If you cannot seem to get any log output, take a look at /var/log/syslog ;)
+
+
