@@ -44,7 +44,7 @@ module AP_MODULE_DECLARE_DATA evasive20_module;
 /* BEGIN DoS Evasive Maneuvers Definitions */
 
 #define MAILER	"/bin/mail %s"
-#define  LOG( A, ... ) { openlog("mod_evasive", LOG_PID, LOG_DAEMON); syslog( A, __VA_ARGS__ ); closelog(); }
+#define  LOG( A, ... ) { nn("mod_evasive", LOG_PID, LOG_DAEMON); syslog( A, __VA_ARGS__ ); closelog(); }
 
 #define DEFAULT_HASH_TBL_SIZE   3097ul  // Default hash table size
 #define DEFAULT_PAGE_COUNT      2       // Default maximum page hit count per interval
@@ -406,7 +406,7 @@ static apr_status_t cleanup_regex_list(void *not_used){
   
   if(targeted_url_regex_list){
     free(targeted_url_regex_list);
-    targeted_url_regex_list = NULL:
+    targeted_url_regex_list = NULL;
   }
 
   for(i = 0 ; i < untargeted_url_regex_count ; ++i){
@@ -659,6 +659,7 @@ struct ntt_node *c_ntt_next(struct ntt *ntt, struct ntt_c *c) {
 
 static const char *
 get_hash_tbl_size(cmd_parms *cmd, void *dconfig, const char *value) {
+  LOG(LOG_ALERT, "Jorge - get_hash_tbl_size");
   long n = strtol(value, NULL, 0);
 
   if (n<=0) {
@@ -835,6 +836,7 @@ static const command_rec access_cmds[] =
 };
 
 static void register_hooks(apr_pool_t *p) {
+  LOG(LOG_ALERT, "Jorge - Inicializando");
   ap_hook_access_checker(access_checker, NULL, NULL, APR_HOOK_MIDDLE);
   apr_pool_cleanup_register(p, NULL, apr_pool_cleanup_null, destroy_hit_list);
   apr_pool_cleanup_register(p, NULL, apr_pool_cleanup_null, cleanup_regex_list);
