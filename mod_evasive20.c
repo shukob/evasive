@@ -406,7 +406,7 @@ static apr_status_t cleanup_regex_list(void *not_used){
   
   if(targeted_url_regex_list){
     free(targeted_url_regex_list);
-    targeted_url_regex_list = NULL:
+    targeted_url_regex_list = NULL;
   }
 
   for(i = 0 ; i < untargeted_url_regex_count ; ++i){
