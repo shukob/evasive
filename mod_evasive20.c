@@ -205,6 +205,16 @@ static int destination_is_filtered(request_rec *r){
     return filtered;
 }
 
+static int extract_client_ip_from_x_forwarded_for(const char* x_forwarded_for, char* out_client_ip, int out_buffer_length){
+    const char *delimiters = ", ";
+    size_t token_length = strcspn(x_forwarded_for, delimiters);
+    if(token_length < out_buffer_length){
+        strncpy(out_client_ip, x_forwarded_for, token_length);
+        return token_length;
+    }
+    return 0;
+}
+
 
 static int access_checker(request_rec *r) 
 {
@@ -220,9 +230,12 @@ static int access_checker(request_rec *r)
     /* Use X-Forwarded-For as remote IP if it exists and specified to use it */
     const char * remote_ip = r->connection->remote_ip;
     const char * forwarded_for = NULL;
+    char extract_fowarded_for_buffer[128];
 
     if(x_forwarded_for_as_remote_ip && (forwarded_for = apr_table_get(r->headers_in, "X-Forwarded-For")) != NULL){
-      remote_ip = forwarded_for;
+        if(extract_client_ip_from_x_forwarded_for(forwarded_for, extract_fowarded_for_buffer, 128)){
+            remote_ip = extract_fowarded_for_buffer;
+        }
     }
 
     if (r->prev == NULL && r->main == NULL && hit_list != NULL) {
